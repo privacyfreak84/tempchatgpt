@@ -4,24 +4,20 @@ on:
   push:
     branches:
       - "tmp/pdf-extract-20261106"
-
-permissions:
-  contents: read
+  workflow_dispatch:
 
 jobs:
   extract:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install pdftotext
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
       - name: Extract PDF text
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq poppler-utils
-          pdftotext -layout "Revised Matrix_Algebra_Engineering_Applications.pdf" matrix_algebra.txt
-          wc -l matrix_algebra.txt
+        run: pdftotext -layout "Revised Matrix_Algebra_Engineering_Applications.pdf" matrix_algebra.txt
       - name: Upload extracted text
         uses: actions/upload-artifact@v4
         with:
-          name: matrix-algebra-extracted-text
+          name: matrix-algebra-text
           path: matrix_algebra.txt
           retention-days: 1
