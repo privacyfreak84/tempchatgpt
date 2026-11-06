@@ -1,0 +1,20 @@
+name: manual-pdf-extract
+
+on:
+  workflow_dispatch:
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pdftotext
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+      - name: Extract PDF text
+        run: pdftotext -layout "Revised Matrix_Algebra_Engineering_Applications.pdf" matrix_algebra.txt
+      - name: Upload extracted text
+        uses: actions/upload-artifact@v4
+        with:
+          name: matrix-algebra-text
+          path: matrix_algebra.txt
+          retention-days: 1
