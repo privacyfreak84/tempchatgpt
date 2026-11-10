@@ -1,0 +1,32 @@
+name: Temporary screenshot transfer
+on:
+  push:
+    branches:
+      - temporary-screenshot-transfer
+permissions:
+  contents: read
+  actions: write
+jobs:
+  transfer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download reference screenshots
+        run: |
+          mkdir -p references
+          curl --fail --silent --show-error --location "https://raw.githubusercontent.com/privacyfreak84/tempchatgpt/main/Screenshot_20261110_222335_Stealth%20Revived.jpg" --output "references/1.jpg"
+          test -s "references/1.jpg"
+          curl --fail --silent --show-error --location "https://raw.githubusercontent.com/privacyfreak84/tempchatgpt/main/Screenshot_20261110_222341_Stealth%20Revived.jpg" --output "references/2.jpg"
+          test -s "references/2.jpg"
+          curl --fail --silent --show-error --location "https://raw.githubusercontent.com/privacyfreak84/tempchatgpt/main/Screenshot_20261110_222348_Stealth%20Revived.jpg" --output "references/3.jpg"
+          test -s "references/3.jpg"
+          curl --fail --silent --show-error --location "https://raw.githubusercontent.com/privacyfreak84/tempchatgpt/main/Screenshot_20261110_223251_OctoDroid.jpg" --output "references/4.jpg"
+          test -s "references/4.jpg"
+          curl --fail --silent --show-error --location "https://raw.githubusercontent.com/privacyfreak84/tempchatgpt/main/Screenshot_20261110_223719_Grit.jpg" --output "references/5.jpg"
+          test -s "references/5.jpg"
+      - name: Upload references
+        uses: actions/upload-artifact@v4
+        with:
+          name: stealth-ui-reference-images
+          path: references/*.jpg
+          if-no-files-found: error
+          retention-days: 1
