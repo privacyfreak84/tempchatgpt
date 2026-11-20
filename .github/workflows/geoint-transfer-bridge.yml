@@ -1,0 +1,36 @@
+name: GeoINT binary transfer bridge
+
+on:
+  push:
+    branches:
+      - geoint-transfer-bridge-20261120
+    paths:
+      - .github/workflows/geoint-transfer-bridge.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fetch-public-geonames:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download public GeoNames India gazetteer
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --retry-delay 2 \
+            "https://download.geonames.org/export/dump/IN.zip" \
+            --output IN.zip
+          echo "Downloaded bytes: $(stat -c '%s' IN.zip)"
+          echo "SHA-256:"
+          sha256sum IN.zip
+          file IN.zip
+
+      - name: Upload as GitHub Actions artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: geoint-geonames-IN
+          path: IN.zip
+          if-no-files-found: error
+          retention-days: 1
